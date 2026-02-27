@@ -1,0 +1,15 @@
+[27-Feb-2026 12:02:55 Asia/Bangkok] AUTH DEBUG: user found = YES
+[27-Feb-2026 12:02:55 Asia/Bangkok] AUTH DEBUG: password_verify = TRUE
+[27-Feb-2026 12:02:55 Asia/Bangkok] AUTH DEBUG: entering success block
+[27-Feb-2026 12:02:56 Asia/Bangkok] AUTH DEBUG: user found = YES
+[27-Feb-2026 12:02:56 Asia/Bangkok] AUTH DEBUG: password_verify = TRUE
+[27-Feb-2026 12:02:56 Asia/Bangkok] AUTH DEBUG: entering success block
+[27-Feb-2026 12:08:23 Asia/Bangkok] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\laragon\www\attendance_system\views\auth\login.php:628
+Stack trace:
+#0 C:\laragon\www\attendance_system\controllers\AuthController.php(279): require()
+#1 C:\laragon\www\attendance_system\controllers\AuthController.php(22): AuthController->view('auth/login')
+#2 C:\laragon\www\attendance_system\router.php(463): AuthController->loginForm()
+#3 C:\laragon\www\attendance_system\router.php(426): Router->dispatchWeb()
+#4 C:\laragon\www\attendance_system\router.php(521): Router->dispatch()
+#5 {main}
+  thrown in C:\laragon\www\attendance_system\views\auth\login.php on line 628

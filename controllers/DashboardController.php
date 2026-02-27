@@ -487,12 +487,3 @@ class DashboardController {
         require VIEWS_PATH . 'layouts/footer.php';
     }
 }
-
-// จัดการ action
-$action = $_GET['action'] ?? 'index';
-$controller = new DashboardController();
-
-switch ($action) {
-    default:
-        $controller->index();
-}

@@ -1,0 +1,9 @@
+Options -Indexes
+RewriteEngine On
+
+# Allow static files to pass through directly
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Route everything else through router.php
+RewriteRule ^ router.php [L]

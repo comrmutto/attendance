@@ -15,7 +15,12 @@ date_default_timezone_set('Asia/Bangkok');
 // Application Settings
 define('APP_NAME', 'Attendance System');
 define('APP_VERSION', '1.0.0');
-define('APP_URL', 'http://localhost:8000');
+// Auto-detect base URL (รองรับทั้ง localhost:8000 และ Laragon subdirectory)
+$_protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$_host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$_script   = dirname($_SERVER['SCRIPT_NAME'] ?? '/');
+$_base     = ($_script === '/' || $_script === '\\') ? '' : rtrim($_script, '/');
+define('APP_URL', $_protocol . '://' . $_host . $_base);
 define('APP_ENV', 'development'); // production, development, testing
 
 // Session Settings

@@ -252,11 +252,21 @@ class Database {
             $fields .= "{$field} = :{$field}, ";
         }
         $fields = rtrim($fields, ', ');
-        
+
+        // แปลง positional ? ใน $where ให้เป็น named params :where_0, :where_1, ...
+        $namedWhereParams = [];
+        $i = 0;
+        $where = preg_replace_callback('/\?/', function($m) use (&$i) {
+            return ':where_' . $i++;
+        }, $where);
+        foreach (array_values($whereParams) as $idx => $val) {
+            $namedWhereParams['where_' . $idx] = $val;
+        }
+
         $sql = "UPDATE {$table} SET {$fields} WHERE {$where}";
-        
+
         try {
-            $params = array_merge($data, $whereParams);
+            $params = array_merge($data, $namedWhereParams);
             $stmt = $this->query($sql, $params);
             return $stmt->rowCount();
         } catch (PDOException $e) {

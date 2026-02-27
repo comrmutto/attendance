@@ -28,7 +28,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="<?php echo asset('css/style.css'); ?>">
+    <link href="<?php echo APP_URL; ?>/assets/css/style.css" rel="stylesheet">
     
     <style>
         :root {

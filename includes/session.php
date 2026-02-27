@@ -1,342 +1,164 @@
 <?php
 /**
- * auth.php - ระบบตรวจสอบสิทธิ์ผู้ใช้
+ * session.php - ระบบจัดการ Session
  */
 
-require_once __DIR__ . '/session.php';
-require_once __DIR__ . '/../classes/User.php';
+class Session {
 
+    /**
+     * เริ่มต้น session พร้อม config ที่ปลอดภัย
+     */
+    public static function start() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_name(SESSION_NAME);
 
-if (!class_exists('Auth')) {
-    class Auth {
-    
-    /**
-     * ตรวจสอบการ login
-     */
-    public static function attempt($username, $password, $remember = false) {
-        $db = Database::getInstance();
-        
-        $sql = "SELECT u.*, e.id as employee_id, e.first_name, e.last_name, e.position_id, p.level 
-                FROM users u 
-                LEFT JOIN employees e ON u.employee_id = e.id
-                LEFT JOIN positions p ON e.position_id = p.id
-                WHERE u.username = ? AND u.status = 1";
-        
-        $user = $db->fetchOne($sql, [$username]);
-        
-        if ($user && password_verify($password, $user['password'])) {
-            // ตั้งค่า session
-            Session::set('user_id', $user['id']);
-            Session::set('employee_id', $user['employee_id']);
-            Session::set('username', $user['username']);
-            Session::set('role', $user['role']);
-            Session::set('position_level', $user['level']);
-            Session::set('user_name', $user['first_name'] . ' ' . $user['last_name']);
-            
-            // Regenerate session id เพื่อป้องกัน session fixation
-            Session::regenerate();
-            
-            // อัปเดต last login
-            $db->update('users', ['last_login' => date('Y-m-d H:i:s')], 'id = ?', [$user['id']]);
-            
-            // ตั้งค่า remember me
-            if ($remember) {
-                self::setRememberMe($user['id']);
-            }
-            
-            // Log กิจกรรม
-            logActivity($user['id'], 'login', 'User logged in');
-            
-            return true;
+            session_set_cookie_params([
+                'lifetime' => SESSION_LIFETIME,
+                'path'     => SESSION_PATH,
+                'domain'   => SESSION_DOMAIN,
+                'secure'   => SESSION_SECURE,
+                'httponly' => SESSION_HTTPONLY,
+                'samesite' => 'Lax',
+            ]);
+
+            session_start();
         }
-        
-        return false;
     }
-    
+
     /**
-     * logout ผู้ใช้
+     * Set session value
      */
-    public static function logout() {
-        $userId = Session::getUserId();
-        
-        // ลบ remember me token
-        self::clearRememberMe($userId);
-        
-        // Log กิจกรรม
-        if ($userId) {
-            logActivity($userId, 'logout', 'User logged out');
-        }
-        
-        // ลบ session
-        Session::destroy();
+    public static function set($key, $value) {
+        $_SESSION[$key] = $value;
     }
-    
+
     /**
-     * ตรวจสอบว่าผู้ใช้ login หรือไม่
+     * Get session value
      */
-    public static function check() {
-        if (Session::isLoggedIn()) {
-            return true;
-        }
-        
-        // ตรวจสอบ remember me token
-        return self::checkRememberMe();
+    public static function get($key, $default = null) {
+        return $_SESSION[$key] ?? $default;
     }
-    
+
     /**
-     * ดึงข้อมูลผู้ใช้ปัจจุบัน
+     * Check if session key exists
      */
-    public static function user() {
-        if (!self::check()) {
-            return null;
+    public static function has($key) {
+        return isset($_SESSION[$key]);
+    }
+
+    /**
+     * Remove session key
+     */
+    public static function remove($key) {
+        unset($_SESSION[$key]);
+    }
+
+    /**
+     * Destroy session
+     */
+    public static function destroy() {
+        $_SESSION = [];
+
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(), '',
+                time() - 42000,
+                $params['path'],
+                $params['domain'],
+                $params['secure'],
+                $params['httponly']
+            );
         }
-        
-        $userId = Session::getUserId();
-        
-        if ($userId) {
-            return User::find($userId);
+
+        session_destroy();
+    }
+
+    /**
+     * Regenerate session ID (ป้องกัน session fixation)
+     */
+    public static function regenerate() {
+        session_regenerate_id(true);
+    }
+
+    /**
+     * Flash message - set
+     */
+    public static function flash($key, $message) {
+        $_SESSION['flash'][$key] = $message;
+    }
+
+    /**
+     * Flash message - get and clear
+     */
+    public static function getFlash($key) {
+        if (isset($_SESSION['flash'][$key])) {
+            $message = $_SESSION['flash'][$key];
+            unset($_SESSION['flash'][$key]);
+            return $message;
         }
-        
         return null;
     }
-    
+
     /**
-     * ตรวจสอบสิทธิ์ตาม role
+     * Check if user is logged in
+     */
+    public static function isLoggedIn() {
+        return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+    }
+
+    /**
+     * Get current user ID
+     */
+    public static function getUserId() {
+        return $_SESSION['user_id'] ?? null;
+    }
+
+    /**
+     * Get current employee ID
+     */
+    public static function getEmployeeId() {
+        return $_SESSION['employee_id'] ?? null;
+    }
+
+    /**
+     * Get current user role
+     */
+    public static function getRole() {
+        return $_SESSION['role'] ?? null;
+    }
+
+    /**
+     * Check if user has one of the given roles
      */
     public static function hasRole($roles) {
-        return self::check() && Session::hasRole($roles);
+        if (!self::isLoggedIn()) return false;
+        if (is_string($roles)) $roles = [$roles];
+        return in_array($_SESSION['role'] ?? '', $roles);
     }
-    
+
     /**
-     * ตรวจสอบสิทธิ์ตาม position level
+     * Check if user has minimum position level
      */
     public static function hasLevel($minLevel) {
-        return self::check() && Session::hasLevel($minLevel);
+        if (!self::isLoggedIn()) return false;
+        return (int)($_SESSION['position_level'] ?? 0) >= (int)$minLevel;
     }
-    
-    /**
-     * ตรวจสอบว่าเป็นผู้ดูแลระบบหรือไม่
-     */
-    public static function isAdmin() {
-        return self::hasRole(['admin', 'gm']);
-    }
-    
-    /**
-     * ตรวจสอบว่าเป็นหัวหน้างานหรือไม่
-     */
-    public static function isSupervisor() {
-        return self::hasLevel(POSITION_SUPERVISOR);
-    }
-    
-    /**
-     * ตรวจสอบว่าเป็น GM หรือไม่
-     */
-    public static function isGM() {
-        return self::hasLevel(POSITION_GM);
-    }
-    
-    /**
-     * ตรวจสอบว่าสามารถดูข้อมูลพนักงานนี้ได้หรือไม่
-     */
-    public static function canViewEmployee($employeeId) {
-        if (!self::check()) {
-            return false;
-        }
-        
-        // Admin/GM ดูได้ทุกคน
-        if (self::isAdmin()) {
-            return true;
-        }
-        
-        $currentEmpId = Session::getEmployeeId();
-        
-        // ดูข้อมูลตัวเอง
-        if ($currentEmpId == $employeeId) {
-            return true;
-        }
-        
-        // ตรวจสอบว่าเป็นหัวหน้าหรือไม่
-        $db = Database::getInstance();
-        
-        // ตรวจสอบสายการบังคับบัญชา
-        $sql = "SELECT id FROM employees WHERE reports_to = ? AND id = ?";
-        $isSubordinate = $db->fetchOne($sql, [$currentEmpId, $employeeId]);
-        
-        if ($isSubordinate) {
-            return true;
-        }
-        
-        // GM ดูได้หลายแผนก
-        if (self::isGM()) {
-            $sql = "SELECT ed.* FROM employee_departments ed 
-                    WHERE ed.employee_id = ? AND ed.department_id = (
-                        SELECT department_id FROM employees WHERE id = ?
-                    )";
-            $canView = $db->fetchOne($sql, [$currentEmpId, $employeeId]);
-            
-            if ($canView) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * ตรวจสอบว่าสามารถดูแผนกนี้ได้หรือไม่
-     */
-    public static function canViewDepartment($departmentId) {
-        if (!self::check()) {
-            return false;
-        }
-        
-        // Admin/GM ดูได้ทุกแผนก
-        if (self::isAdmin()) {
-            return true;
-        }
-        
-        $currentEmpId = Session::getEmployeeId();
-        
-        // ตรวจสอบว่าเป็นพนักงานในแผนกหรือไม่
-        $db = Database::getInstance();
-        
-        $sql = "SELECT id FROM employees WHERE department_id = ? AND id = ?";
-        $inDepartment = $db->fetchOne($sql, [$departmentId, $currentEmpId]);
-        
-        if ($inDepartment) {
-            return true;
-        }
-        
-        // GM ดูได้หลายแผนก
-        if (self::isGM()) {
-            $sql = "SELECT * FROM employee_departments 
-                    WHERE employee_id = ? AND department_id = ?";
-            $canView = $db->fetchOne($sql, [$currentEmpId, $departmentId]);
-            
-            if ($canView) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * ตั้งค่า remember me token
-     */
-    private static function setRememberMe($userId) {
-        $token = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', time() + 2592000); // 30 days
-        
-        $db = Database::getInstance();
-        
-        // ลบ token เก่า
-        $db->delete('remember_tokens', 'user_id = ?', [$userId]);
-        
-        // บันทึก token ใหม่
-        $db->insert('remember_tokens', [
-            'user_id' => $userId,
-            'token' => password_hash($token, PASSWORD_DEFAULT),
-            'expires_at' => $expires
-        ]);
-        
-        // ตั้งค่า cookie
-        setcookie(
-            'remember_token',
-            $userId . ':' . $token,
-            time() + 2592000,
-            '/',
-            '',
-            false,
-            true
-        );
-    }
-    
-    /**
-     * ตรวจสอบ remember me token
-     */
-    private static function checkRememberMe() {
-        if (!isset($_COOKIE['remember_token'])) {
-            return false;
-        }
-        
-        list($userId, $token) = explode(':', $_COOKIE['remember_token'], 2);
-        
-        $db = Database::getInstance();
-        
-        $sql = "SELECT * FROM remember_tokens 
-                WHERE user_id = ? AND expires_at > NOW() 
-                ORDER BY id DESC LIMIT 1";
-        
-        $record = $db->fetchOne($sql, [$userId]);
-        
-        if ($record && password_verify($token, $record['token'])) {
-            // Login อัตโนมัติ
-            $user = User::find($userId);
-            
-            if ($user) {
-                Session::set('user_id', $user['id']);
-                Session::set('employee_id', $user['employee_id']);
-                Session::set('username', $user['username']);
-                Session::set('role', $user['role']);
-                
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    /**
-     * ลบ remember me token
-     */
-    private static function clearRememberMe($userId) {
-        $db = Database::getInstance();
-        $db->delete('remember_tokens', 'user_id = ?', [$userId]);
-        
-        setcookie('remember_token', '', time() - 3600, '/');
-    }
-}
 
-/**
- * Middleware: ต้อง login เท่านั้น
- */
-if (!function_exists('requireLogin')) {
-    function requireLogin() {
-        if (!Auth::check()) {
-            Session::flash('error', 'กรุณาเข้าสู่ระบบก่อน');
-            redirect('/login');
+    /**
+     * ดึง CSRF token (สร้างใหม่ถ้ายังไม่มี)
+     */
+    public static function getCsrfToken() {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
+        return $_SESSION['csrf_token'];
     }
-}
 
-/**
- * Middleware: ต้องมี role ที่กำหนด
- */
-if (!function_exists('requireRole')) {
-    function requireRole($roles) {
-    requireLogin();
-    
-    if (!Auth::hasRole($roles)) {
-        http_response_code(403);
-        require VIEWS_PATH . 'auth/403.php';
-        exit;
+    /**
+     * ตรวจสอบ CSRF token
+     */
+    public static function verifyCsrfToken($token) {
+        return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
     }
-}
-
-}
-/**
- * Middleware: ต้องมี position level ตามที่กำหนด
- */
-if (!function_exists('requireLevel')) {
-    function requireLevel($minLevel) {
-    requireLogin();
-    
-    if (!Auth::hasLevel($minLevel)) {
-        http_response_code(403);
-        require VIEWS_PATH . 'auth/403.php';
-        exit;
-    }
-}
-}
 }

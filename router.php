@@ -407,6 +407,10 @@ class Router {
         try {
             // ถ้าเป็น static file ให้ serve ทันที
             $staticPath = BASE_PATH . $this->requestUri;
+            // DEBUG - ลบออกหลัง fix
+            if (strpos($this->requestUri, '/assets/') === 0) {
+                error_log("STATIC DEBUG: uri=" . $this->requestUri . " path=" . $staticPath . " exists=" . (file_exists($staticPath) ? 'YES' : 'NO'));
+            }
             if (serveStaticFile($staticPath)) {
                 return true;
             }

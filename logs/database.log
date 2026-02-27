@@ -1,0 +1,207 @@
+2026-02-27 12:02:06 - Database Error: HY093
+Message: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
+SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+Params: Array
+(
+    [last_login] => 2026-02-27 12:02:06
+    [0] => 1
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('UPDATE users SE...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(260): Database->query('UPDATE users SE...', Array)
+#2 C:\laragon\www\attendance_system\includes\auth.php(37): Database->update('users', Array, 'id = ?', Array)
+#3 C:\laragon\www\attendance_system\debug_auth.php(70): Auth::attempt('admin', 'admin123')
+#4 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:02:06 - Database Error: HY093
+Message: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
+SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+Params: Array
+(
+    [last_login] => 2026-02-27 12:02:06
+    [0] => 1
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('UPDATE users SE...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(260): Database->query('UPDATE users SE...', Array)
+#2 C:\laragon\www\attendance_system\includes\auth.php(37): Database->update('users', Array, 'id = ?', Array)
+#3 C:\laragon\www\attendance_system\debug_auth.php(70): Auth::attempt('admin', 'admin123')
+#4 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:02:55 - Database Error: HY093
+Message: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
+SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+Params: Array
+(
+    [last_login] => 2026-02-27 12:02:55
+    [0] => 1
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('UPDATE users SE...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(260): Database->query('UPDATE users SE...', Array)
+#2 C:\laragon\www\attendance_system\includes\auth.php(44): Database->update('users', Array, 'id = ?', Array)
+#3 C:\laragon\www\attendance_system\debug_auth.php(70): Auth::attempt('admin', 'admin123')
+#4 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:02:55 - Database Error: HY093
+Message: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
+SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+Params: Array
+(
+    [last_login] => 2026-02-27 12:02:55
+    [0] => 1
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('UPDATE users SE...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(260): Database->query('UPDATE users SE...', Array)
+#2 C:\laragon\www\attendance_system\includes\auth.php(44): Database->update('users', Array, 'id = ?', Array)
+#3 C:\laragon\www\attendance_system\debug_auth.php(70): Auth::attempt('admin', 'admin123')
+#4 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:02:56 - Database Error: HY093
+Message: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
+SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+Params: Array
+(
+    [last_login] => 2026-02-27 12:02:56
+    [0] => 1
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('UPDATE users SE...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(260): Database->query('UPDATE users SE...', Array)
+#2 C:\laragon\www\attendance_system\includes\auth.php(44): Database->update('users', Array, 'id = ?', Array)
+#3 C:\laragon\www\attendance_system\debug_auth.php(70): Auth::attempt('admin', 'admin123')
+#4 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:02:56 - Database Error: HY093
+Message: SQLSTATE[HY093]: Invalid parameter number: mixed named and positional parameters
+SQL: UPDATE users SET last_login = :last_login WHERE id = ?
+Params: Array
+(
+    [last_login] => 2026-02-27 12:02:56
+    [0] => 1
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('UPDATE users SE...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(260): Database->query('UPDATE users SE...', Array)
+#2 C:\laragon\www\attendance_system\includes\auth.php(44): Database->update('users', Array, 'id = ?', Array)
+#3 C:\laragon\www\attendance_system\debug_auth.php(70): Auth::attempt('admin', 'admin123')
+#4 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:12:09 - Database Error: 42S02
+Message: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'attendance_db.leave_requests' doesn't exist
+SQL: SELECT COUNT(*) FROM leave_requests 
+                     WHERE ? BETWEEN start_date AND end_date 
+                     AND status = 'approved'
+Params: Array
+(
+    [0] => 2026-02-27
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(143): Database->query('SELECT COUNT(*)...', Array)
+#2 C:\laragon\www\attendance_system\classes\Attendance.php(428): Database->fetchValue('SELECT COUNT(*)...', Array)
+#3 C:\laragon\www\attendance_system\controllers\DashboardController.php(68): Attendance::getSummary('2026-02-27', NULL)
+#4 C:\laragon\www\attendance_system\controllers\DashboardController.php(33): DashboardController->getSummaryData()
+#5 C:\laragon\www\attendance_system\controllers\DashboardController.php(497): DashboardController->index()
+#6 C:\laragon\www\attendance_system\router.php(448): require_once('C:\\laragon\\www\\...')
+#7 C:\laragon\www\attendance_system\router.php(426): Router->dispatchWeb()
+#8 C:\laragon\www\attendance_system\router.php(521): Router->dispatch()
+#9 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:13:42 - Database Error: 42000
+Message: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'attendance_db.e.user_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+SQL: SELECT e.user_id, e.first_name, e.last_name, 
+                    COUNT(*) as absent_days
+             FROM employees e
+             JOIN attendance_records a ON e.id = a.employee_id
+             WHERE a.date BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE()
+             AND a.check_in_time IS NULL
+             AND e.status = 1
+             GROUP BY e.id
+             HAVING absent_days >= 3
+             LIMIT 5
+Params: Array
+(
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('SELECT e.user_i...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(135): Database->query('SELECT e.user_i...', Array)
+#2 C:\laragon\www\attendance_system\controllers\DashboardController.php(154): Database->fetchAll('SELECT e.user_i...')
+#3 C:\laragon\www\attendance_system\controllers\DashboardController.php(37): DashboardController->getNotifications()
+#4 C:\laragon\www\attendance_system\controllers\DashboardController.php(497): DashboardController->index()
+#5 C:\laragon\www\attendance_system\router.php(448): require_once('C:\\laragon\\www\\...')
+#6 C:\laragon\www\attendance_system\router.php(426): Router->dispatchWeb()
+#7 C:\laragon\www\attendance_system\router.php(521): Router->dispatch()
+#8 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:13:44 - Database Error: 42000
+Message: SQLSTATE[42000]: Syntax error or access violation: 1055 Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'attendance_db.e.user_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by
+SQL: SELECT e.user_id, e.first_name, e.last_name, 
+                    COUNT(*) as absent_days
+             FROM employees e
+             JOIN attendance_records a ON e.id = a.employee_id
+             WHERE a.date BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE()
+             AND a.check_in_time IS NULL
+             AND e.status = 1
+             GROUP BY e.id
+             HAVING absent_days >= 3
+             LIMIT 5
+Params: Array
+(
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('SELECT e.user_i...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(135): Database->query('SELECT e.user_i...', Array)
+#2 C:\laragon\www\attendance_system\controllers\DashboardController.php(154): Database->fetchAll('SELECT e.user_i...')
+#3 C:\laragon\www\attendance_system\controllers\DashboardController.php(37): DashboardController->getNotifications()
+#4 C:\laragon\www\attendance_system\controllers\DashboardController.php(497): DashboardController->index()
+#5 C:\laragon\www\attendance_system\router.php(448): require_once('C:\\laragon\\www\\...')
+#6 C:\laragon\www\attendance_system\router.php(426): Router->dispatchWeb()
+#7 C:\laragon\www\attendance_system\router.php(521): Router->dispatch()
+#8 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:14:24 - Database Error: 42S22
+Message: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'birth_date' in 'field list'
+SQL: SELECT user_id, first_name, last_name, birth_date
+             FROM employees
+             WHERE MONTH(birth_date) = MONTH(CURDATE())
+             AND DAY(birth_date) = DAY(CURDATE())
+             AND status = 1
+             LIMIT 5
+Params: Array
+(
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('SELECT user_id,...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(135): Database->query('SELECT user_id,...', Array)
+#2 C:\laragon\www\attendance_system\controllers\DashboardController.php(180): Database->fetchAll('SELECT user_id,...')
+#3 C:\laragon\www\attendance_system\controllers\DashboardController.php(37): DashboardController->getNotifications()
+#4 C:\laragon\www\attendance_system\controllers\DashboardController.php(497): DashboardController->index()
+#5 C:\laragon\www\attendance_system\router.php(448): require_once('C:\\laragon\\www\\...')
+#6 C:\laragon\www\attendance_system\router.php(426): Router->dispatchWeb()
+#7 C:\laragon\www\attendance_system\router.php(521): Router->dispatch()
+#8 {main}
+--------------------------------------------------------------------------------
+2026-02-27 12:14:25 - Database Error: 42S22
+Message: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'birth_date' in 'field list'
+SQL: SELECT user_id, first_name, last_name, birth_date
+             FROM employees
+             WHERE MONTH(birth_date) = MONTH(CURDATE())
+             AND DAY(birth_date) = DAY(CURDATE())
+             AND status = 1
+             LIMIT 5
+Params: Array
+(
+)
+
+Trace: #0 C:\laragon\www\attendance_system\classes\Database.php(69): PDO->prepare('SELECT user_id,...')
+#1 C:\laragon\www\attendance_system\classes\Database.php(135): Database->query('SELECT user_id,...', Array)
+#2 C:\laragon\www\attendance_system\controllers\DashboardController.php(180): Database->fetchAll('SELECT user_id,...')
+#3 C:\laragon\www\attendance_system\controllers\DashboardController.php(37): DashboardController->getNotifications()
+#4 C:\laragon\www\attendance_system\controllers\DashboardController.php(497): DashboardController->index()
+#5 C:\laragon\www\attendance_system\router.php(448): require_once('C:\\laragon\\www\\...')
+#6 C:\laragon\www\attendance_system\router.php(426): Router->dispatchWeb()
+#7 C:\laragon\www\attendance_system\router.php(521): Router->dispatch()
+#8 {main}
+--------------------------------------------------------------------------------

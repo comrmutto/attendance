@@ -13,14 +13,16 @@ class AuthController {
     /**
      * แสดงหน้า login
      */
-    public function loginForm() {
-        // ถ้า login อยู่แล้ว ให้ไปหน้าหลัก
-        if (Auth::check()) {
-            redirect('/dashboard');
-        }
-        
-        $this->view('auth/login');
+public function loginForm() {
+    if (Auth::check()) {
+        redirect('/dashboard');
     }
+    
+    // ← เพิ่มบรรทัดนี้ เพื่อ generate CSRF token ก่อน render
+    Session::getCsrfToken();
+    
+    $this->view('auth/login');
+}
     
     /**
      * ตรวจสอบการ login
@@ -278,34 +280,4 @@ class AuthController {
         extract($data);
         require VIEWS_PATH . $view . '.php';
     }
-}
-
-// จัดการ action
-$action = $_GET['action'] ?? 'loginForm';
-$controller = new AuthController();
-
-switch ($action) {
-    case 'login':
-        $controller->login();
-        break;
-    case 'logout':
-        $controller->logout();
-        break;
-    case 'forgotPasswordForm':
-        $controller->forgotPasswordForm();
-        break;
-    case 'forgotPassword':
-        $controller->forgotPassword();
-        break;
-    case 'resetPasswordForm':
-        $controller->resetPasswordForm();
-        break;
-    case 'resetPassword':
-        $controller->resetPassword();
-        break;
-    case 'changePassword':
-        $controller->changePassword();
-        break;
-    default:
-        $controller->loginForm();
 }
