@@ -1,0 +1,119 @@
+/* Toast Notifications */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    padding: 15px 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 9999;
+    border-left: 4px solid;
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+}
+
+.toast-notification.success {
+    border-left-color: var(--success-color);
+}
+
+.toast-notification.error {
+    border-left-color: var(--danger-color);
+}
+
+.toast-notification.warning {
+    border-left-color: var(--warning-color);
+}
+
+.toast-notification.info {
+    border-left-color: var(--info-color);
+}
+
+/* Activity List */
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.activity-icon.present {
+    background: rgba(25, 135, 84, 0.15);
+    color: var(--success-color);
+}
+
+.activity-icon.late {
+    background: rgba(255, 193, 7, 0.15);
+    color: var(--warning-color);
+}
+
+.activity-icon.overtime {
+    background: rgba(13, 110, 253, 0.15);
+    color: var(--primary-color);
+}
+
+.activity-icon.absent {
+    background: rgba(220, 53, 69, 0.15);
+    color: var(--danger-color);
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-user {
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.activity-time {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-bottom: 2px;
+}
+
+/* Date Range Picker */
+.daterangepicker {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.daterangepicker .ranges li.active {
+    background-color: var(--primary-color);
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+    
+    .card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+}
